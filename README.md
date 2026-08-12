@@ -1,34 +1,45 @@
 ## 👥 Contributor Guide: Adding New Data & Dataset Rules
 
-If you are adding new images, signs, or phrases to the dataset, please follow the workflow and pruning guidelines below to ensure model accuracy and balance.
+If you are adding new images, signs, or phrases to the dataset, follow the guidelines below to keep the dataset balanced, clean, and synchronized across the team.
 
 ---
 
-### 🔄 Workflow for Adding New Data
-
-1. **Upload Images to Roboflow:**
-   * Upload your raw hand sign photos/frames to the project on Roboflow.
-2. **Annotate the Images:**
-   * Draw tight bounding boxes around the hand performing the gesture. 
-   * *Note: MATLAB reads these annotation coordinates directly to crop the hands during preprocessing.*
-3. **Run `crop_dataset.m`:**
-   * Execute `crop_dataset.m` in MATLAB to automatically crop the newly annotated hand regions and resize them to **227 × 227**.
+### ⚡ Quick Summary (TL;DR)
+If you want to add new pictures or manage classes, **you just need to modify the `cropped_7k_dataset/` folder directly**:
+* **Remove Unused Classes:** Feel free to delete any class folders that we are not using or identifying for our project—that is completely fine!
+* **Maintain the Base Dataset:** Build upon the standardized dataset provided in the **Google Drive**, rather than starting from scratch.
+* **Sync Everything to GDrive:** Every new cropped image, newly added word, or modified folder **must be uploaded to the shared Google Drive** so everyone stays on the exact same dataset version.
 
 ---
 
-### ✂️ Preprocessing & Hand-Pruning Strategy
+### 🔄 Workflow for Adding New Pictures / Words
 
-> **Distribution Note:** The fully hand-pruned dataset is shared via **Google Drive**. Download and place it into your local workspace prior to training.
-
-#### **Why the Dataset Was Reduced (7,000+ → ~400 Images)**
-* **MobileNetV2 Limitation:** MobileNetV2 evaluates **static images**, not sequential video frames.
-* **Keyframe Selection:** Rather than training on blurry transitions or setup frames, dynamic sign sequences were manually hand-pruned to retain only the single most distinct, "stand-out" moment of each gesture.
-* **Current Dataset Target:** The raw 7k+ image set was distilled down to **~400 total images**, targeting roughly **60 images per sign/phrase**.
+1. **Upload & Annotate on Roboflow:**
+   * Add your new images to Roboflow and draw tight bounding boxes around the hand gesture.
+2. **Run `crop_dataset.m`:**
+   * Run the cropping script in MATLAB whenever you add new pictures, phrases, or words so MATLAB can auto-crop and resize them based on the annotation boxes.
+3. **Move to Local Dataset Folder:**
+   * Place the preprocessed outputs into the corresponding class subfolders inside `cropped_7k_dataset/`.
+4. **Upload Updates to Google Drive:**
+   * Upload all new cropped images and any newly added word folders directly to the shared **Google Drive** folder immediately after cropping.
 
 ---
 
-### ⚠️ Essential Rules for Contributors
+### ✂️ Hand-Pruning & Dataset Rules
 
-* ⚖️ **Maintain Class Balance:** Each word or phrase **must have a similar number of images** (aim for **~60 images per class**). Having too few images for a specific class will introduce model bias toward over-represented signs.
-* 🎯 **Pick Keyframes Only:** Avoid uploading multi-frame video dumps. Choose only the clearest, most representative static pose of the sign.
-* 📌 **Team Sync & Tracking:** Before adding new phrases or uploading new image batches, notify the team to keep track of added words and maintain clean, standardized class labels.
+#### **1. Pick the Most "Stand-Out" Frame Only**
+* **MobileNetV2 Limitation:** MobileNetV2 evaluates **static images**, not continuous video feeds.
+* **Keyframe Selection:** Do not train on transitional frames or setup poses. Identify the **single most distinct, representative moment** of the sign gesture and only include those frames. *(We are framing this design choice around project time constraints!)*
+
+#### **2. Maintain Balanced Sample Sizes**
+* Keep the number of images per class roughly equal across all signs/phrases. 
+* **Avoid Imbalance:** Giving one phrase significantly fewer or more images will introduce heavy model bias towards/against specific words.
+
+#### **3. Vary Lighting & Conditions**
+* When capturing new pictures, take them under different lighting conditions, angles, and backgrounds to improve real-time detection robustness.
+
+---
+
+### 🔗 Links & Resources
+
+* **Dataset (Google Drive):** [FSL Dataset Folder](https://drive.google.com/drive/folders/1eO-flRL4MXVITNtlAHlL1M6mtlzcahde)
