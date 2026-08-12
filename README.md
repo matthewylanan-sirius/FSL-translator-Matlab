@@ -1,47 +1,34 @@
-## ➕ How to Add to Dataset, Annotate, and Retrain
+## 👥 Contributor Guide: Adding New Data & Dataset Rules
 
-Follow this step-by-step guide to expand the dataset with new hand sign images, annotate them, and retrain the MobileNetV2 model.
-
----
-
-### **Step 1: Collect & Annotate Images**
-* **Capture Images:** Take high-quality photos/videos of the hand signs under varied lighting conditions, angles, and backgrounds.
-* **Annotate Bounding Boxes:**
-  * Upload your new images to **Roboflow** (or use an annotation tool like **LabelImg** or **CVAT**).
-  * Draw tight bounding boxes around the hand performing the gesture.
-  * Assign the proper class label (e.g., `A`, `B`, `Hello`, etc.).
-* **Export Annotations:** Export the annotated dataset in the format matching your raw Roboflow folder setup (containing images and annotation files/JSON/Pascal VOC XML).
+If you are adding new images, signs, or phrases to the dataset, please follow the workflow and pruning guidelines below to ensure model accuracy and balance.
 
 ---
 
-### **Step 2: Add Images to Raw Dataset**
-* Place the newly annotated images and their corresponding annotation files into your raw dataset directory alongside the existing 7k+ images.
-* If creating a **new sign/class**, ensure the new class folder or label matches the structure expected by the preprocessing pipeline.
+### 🔄 Workflow for Adding New Data
+
+1. **Upload Images to Roboflow:**
+   * Upload your raw hand sign photos/frames to the project on Roboflow.
+2. **Annotate the Images:**
+   * Draw tight bounding boxes around the hand performing the gesture. 
+   * *Note: MATLAB reads these annotation coordinates directly to crop the hands during preprocessing.*
+3. **Run `crop_dataset.m`:**
+   * Execute `crop_dataset.m` in MATLAB to automatically crop the newly annotated hand regions and resize them to **227 × 227**.
 
 ---
 
-### **Step 3: Re-Run Preprocessing Scripts**
-Open MATLAB and re-execute the cropping and renaming workflow to incorporate the new data:
+### ✂️ Preprocessing & Hand-Pruning Strategy
 
-1. **Run `crop_dataset.m`:**
-   * Crops the newly added images using their bounding boxes.
-   * Resizes them to the required **227 × 227** pixel dimensions.
-2. **Run `rename_crop.m`:**
-   * Updates folder/file names to proper human-readable class labels.
-   * Refreshes the `cropped_7k_dataset/` folder.
+> **Distribution Note:** The fully hand-pruned dataset is shared via **Google Drive**. Download and place it into your local workspace prior to training.
 
----
-
-### **Step 4: Retrain the Model**
-Run `train_fsl_mobilenetv2.m` in MATLAB:
-* The script reads the refreshed `cropped_7k_dataset/` directory (including all new/updated classes).
-* Training fine-tunes MobileNetV2 with the augmented dataset.
-* Upon completion, it overwrites `fsl_mobilenetv2.mat` with the newly updated weights.
+#### **Why the Dataset Was Reduced (7,000+ → ~400 Images)**
+* **MobileNetV2 Limitation:** MobileNetV2 evaluates **static images**, not sequential video frames.
+* **Keyframe Selection:** Rather than training on blurry transitions or setup frames, dynamic sign sequences were manually hand-pruned to retain only the single most distinct, "stand-out" moment of each gesture.
+* **Current Dataset Target:** The raw 7k+ image set was distilled down to **~400 total images**, targeting roughly **60 images per sign/phrase**.
 
 ---
 
-### **Step 5: Re-Export & Test ONNX Model**
-1. Run `export_model.m` in MATLAB to convert the updated `fsl_mobilenetv2.mat` into `fsl_mobilenetv2.onnx`.
-2. Launch Python and run:
-   ```bash
-   python live_demo.py
+### ⚠️ Essential Rules for Contributors
+
+* ⚖️ **Maintain Class Balance:** Each word or phrase **must have a similar number of images** (aim for **~60 images per class**). Having too few images for a specific class will introduce model bias toward over-represented signs.
+* 🎯 **Pick Keyframes Only:** Avoid uploading multi-frame video dumps. Choose only the clearest, most representative static pose of the sign.
+* 📌 **Team Sync & Tracking:** Before adding new phrases or uploading new image batches, notify the team to keep track of added words and maintain clean, standardized class labels.
