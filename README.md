@@ -1,45 +1,62 @@
-## 👥 Contributor Guide: Adding New Data & Dataset Rules
+#  Filipino Sign Language (FSL) Recognition System
 
-If you are adding new images, signs, or phrases to the dataset, follow the guidelines below to keep the dataset balanced, clean, and synchronized across the team.
-
----
-
-### ⚡ Quick Summary (TL;DR)
-If you want to add new pictures or manage classes, **you just need to modify the `cropped_7k_dataset/` folder directly**:
-* **Remove Unused Classes:** Feel free to delete any class folders that we are not using or identifying for our project—that is completely fine!
-* **Maintain the Base Dataset:** Build upon the standardized dataset provided in the **Google Drive**, rather than starting from scratch.
-* **Sync Everything to GDrive:** Every new cropped image, newly added word, or modified folder **must be uploaded to the shared Google Drive** so everyone stays on the exact same dataset version.
+**Authors / Project Team:**
+1. **Joaquin Carlo E. Cardino**
+2. **Luis Antonio Quijano Roa**
+3. **Ericson Adler Yang Tan**
+4. **Matthew Ylanan**
 
 ---
 
-### 🔄 Workflow for Adding New Pictures / Words
+##  Project Overview
 
-1. **Upload & Annotate on Roboflow:**
-   * Add your new images to Roboflow and draw tight bounding boxes around the hand gesture.
-2. **Run `crop_dataset.m`:**
-   * Run the cropping script in MATLAB whenever you add new pictures, phrases, or words so MATLAB can auto-crop and resize them based on the annotation boxes.
-3. **Move to Local Dataset Folder:**
-   * Place the preprocessed outputs into the corresponding class subfolders inside `cropped_7k_dataset/`.
-4. **Upload Updates to Google Drive:**
-   * Upload all new cropped images and any newly added word folders directly to the shared **Google Drive** folder immediately after cropping.
+This project is a **computer vision and machine learning system** designed to recognize and classify **Filipino Sign Language (FSL)** gestures, signs, and transactional phrases into standard text. 
+
+The primary goal is to bridge the communication gap between the Deaf community and non-signers in public, commercial, and transactional settings. Because continuous real-time video processing can be computationally heavy and resource-intensive, the system is designed to evaluate **static keyframe images**—focusing on the single most distinct moment of a hand gesture to deliver fast, accurate predictions.
 
 ---
 
-### ✂️ Hand-Pruning & Dataset Rules
+##  How the Program Works
 
-#### **1. Pick the Most "Stand-Out" Frame Only**
-* **MobileNetV2 Limitation:** MobileNetV2 evaluates **static images**, not continuous video feeds.
-* **Keyframe Selection:** Do not train on transitional frames or setup poses. Identify the **single most distinct, representative moment** of the sign gesture and only include those frames. *(We are framing this design choice around project time constraints!)*
+The system processes sign language data through an end-to-end computer vision pipeline:
 
-#### **2. Maintain Balanced Sample Sizes**
-* Keep the number of images per class roughly equal across all signs/phrases. 
-* **Avoid Imbalance:** Giving one phrase significantly fewer or more images will introduce heavy model bias towards/against specific words.
+```
+[ Raw Gesture Video / Photos ]
+             │
+             ▼
+[ Bounding Box Annotation (Roboflow) ]
+             │
+             ▼
+[ Auto-Cropping & Resizing (MATLAB: crop_dataset.m) ]
+             │
+             ▼
+[ Centralized Dataset Management (cropped_7k_dataset/) ]
+             │
+             ▼
+[ Feature Extraction & Classification (MobileNetV2) ]
+             │
+             ▼
+[ Predicted Text / Sign Label Output ]
+```
 
-#### **3. Vary Lighting & Conditions**
-* When capturing new pictures, take them under different lighting conditions, angles, and backgrounds to improve real-time detection robustness.
+1. **Data Acquisition & Annotation:** Raw images or recorded video frames of hand gestures are captured across diverse real-world environments. Contributors draw tight bounding boxes around the active hand gestures using **Roboflow**.
+2. **Automated Bounding Box Cropping:** The MATLAB script (`crop_dataset.m`) reads the annotation metadata, isolates the region of interest (the hand/gesture), and crops and resizes the image into a uniform aspect ratio.
+3. **Dataset Standardization:** The cropped images are organized into class folders within `cropped_7k_dataset/` and synchronized to a shared **Google Drive** repository to ensure model versioning and dataset balance.
+4. **Static Keyframe Classification:** Preprocessed images are fed into **MobileNetV2**, a lightweight convolutional neural network (CNN). MobileNetV2 extracts spatial feature maps from the cropped image and classifies the hand shape into its corresponding FSL phrase or letter.
 
 ---
 
-### 🔗 Links & Resources
+##  Tech Stack & Tooling
+
+| Component | Technology | Purpose & Function |
+| :--- | :--- | :--- |
+| **Model Architecture** | **MobileNetV2** | Lightweight convolutional neural network optimized for fast image classification on edge devices and standard hardware. |
+| **Annotation Platform** | **Roboflow** | Cloud-based tool used to upload raw images and draw precise bounding boxes around hand gestures. |
+| **Data Processing** | **MATLAB (`crop_dataset.m`)** | Custom script used to automatically crop, resize, and pre-process target gestures based on Roboflow bounding box data. |
+| **Dataset Domain** | **FSL (Filipino Sign Language)** | Specialized domain covering numbers, letters, and transactional phrases. |
+
+---
+
+###  Links & Resources
 
 * **Dataset (Google Drive):** [FSL Dataset Folder](https://drive.google.com/drive/folders/1eO-flRL4MXVITNtlAHlL1M6mtlzcahde)
