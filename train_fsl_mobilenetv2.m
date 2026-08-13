@@ -1,8 +1,10 @@
+%% 
 clear; clc; close all;
 
 % 1. Load Dataset
 % Ensure cropped_7k_dataset contains subfolders:
-% 'ano-pangalan-mo', 'kamusta-ka', 'magandang-umaga', 'mahal-kita', 'pasensya-na', 'salamat'
+% 'ano-pangalan-mo', 'kamusta-ka', 'magandang-umaga', 'mahal-kita',
+% 'pasensya-na', 'salamat', 'email'
 datasetFolder = fullfile(pwd, 'cropped_7k_dataset');
 if ~exist(datasetFolder, 'dir')
     error("Dataset folder 'cropped_7k_dataset' not found in current directory: %s", pwd);
@@ -61,7 +63,7 @@ options = trainingOptions('adam', ...
     'ValidationFrequency', 10, ...
     'Plots', 'training-progress', ...
     'Verbose', true, ...
-    'ExecutionEnvironment', 'auto');
+    'ExecutionEnvironment', 'gpu');
 
 % 6. Train the Model
 disp("Starting training on 6 clean keyframe classes...");

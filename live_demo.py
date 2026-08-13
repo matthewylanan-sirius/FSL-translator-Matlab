@@ -11,7 +11,35 @@ CLASS_NAMES = [
     'ano-pangalan-mo',
     'kamusta-ka',
     'mahal-kita',
-    'maraming-salamat'
+    'maraming-salamat',
+    'email',
+    'a',
+    'b',
+    'c',
+    'd',
+    'e',
+    'f',
+    'g',
+    'h',
+    'i',
+    'j',
+    'k',
+    'l',
+    'm',
+    'n',
+    'o',
+    'p',
+    'q',
+    'r',
+    's',
+    't',
+    'u',
+    'v',
+    'w',
+    'x',
+    'y',
+    'z'
+
 ]
 
 # 2. Resolve Path and Load MATLAB ONNX Model
@@ -89,8 +117,8 @@ while cap.isOpened():
 
             if len(input_shape) == 4 and input_shape[1] == 3:
                 img_data = np.transpose(img_data, (2, 0, 1))  # [H, W, C] -> [C, H, W]
-            
-            img_data = np.expand_dims(img_data, axis=0)       # Add batch dim -> [1, C, H, W]
+
+            img_data = np.expand_dims(img_data, axis=0)  # Add batch dim -> [1, C, H, W]
 
             # Run ONNX inference
             outputs = session.run([output_name], {input_name: img_data})
@@ -118,6 +146,8 @@ while cap.isOpened():
     cv2.imshow("FSL AI Recognition (MediaPipe + MATLAB ONNX)", frame)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+    elif cv2.waitKey(1) & 0xFF == ord('Q'):
         break
 
 cap.release()

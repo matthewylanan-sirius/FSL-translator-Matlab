@@ -71,11 +71,11 @@ for i = 1:length(imgFiles)
         
         if wPix <= 5 || hPix <= 5, continue; end
         
-        % Crop hand and resize to 224x224
+        % Crop hand and resize to 227x227
         croppedHand = imcrop(img, [xMin, yMin, wPix, hPix]);
         if isempty(croppedHand), continue; end
         
-        resizedHand = imresize(croppedHand, [224 224]);
+        resizedHand = imresize(croppedHand, [227 227]);
         
         % Save cropped hand into class folder
         classFolder = fullfile(outputFolder, sprintf('class_%02d', cID));
