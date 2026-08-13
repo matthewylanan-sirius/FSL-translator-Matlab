@@ -71,7 +71,7 @@ for i = 1:length(imgFiles)
         
         if wPix <= 5 || hPix <= 5, continue; end
         
-        % Crop hand and resize to 227x227
+        % Crop hand and resize to 224x224
         croppedHand = imcrop(img, [xMin, yMin, wPix, hPix]);
         if isempty(croppedHand), continue; end
         
